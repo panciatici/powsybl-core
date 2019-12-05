@@ -8,6 +8,7 @@ package com.powsybl.iidm.xml;
 
 import com.google.auto.service.AutoService;
 import com.powsybl.commons.extensions.ExtensionXmlSerializer;
+import com.powsybl.commons.xml.IidmXmlVersion;
 import com.powsybl.commons.xml.XmlReaderContext;
 import com.powsybl.commons.xml.XmlUtil;
 import com.powsybl.commons.xml.XmlWriterContext;
@@ -38,8 +39,8 @@ public class TerminalMockXmlSerializer implements ExtensionXmlSerializer<Load, T
     }
 
     @Override
-    public String getNamespaceUri() {
-        return "http://www.itesla_project.eu/schema/iidm/ext/terminal_mock/1_0";
+    public String getNamespaceUri(IidmXmlVersion version) {
+        return "http://www.itesla_project.eu/schema/iidm/ext/terminal_mock/1_1";
     }
 
     @Override
