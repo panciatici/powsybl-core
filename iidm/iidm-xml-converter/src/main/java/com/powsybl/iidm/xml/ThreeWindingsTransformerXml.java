@@ -6,8 +6,8 @@
  */
 package com.powsybl.iidm.xml;
 
-import com.powsybl.commons.PowsyblException;
 import com.powsybl.commons.xml.XmlUtil;
+import com.powsybl.iidm.network.PhaseTapChanger;
 import com.powsybl.iidm.network.RatioTapChanger;
 import com.powsybl.iidm.network.Substation;
 import com.powsybl.iidm.network.ThreeWindingsTransformer;
@@ -46,13 +46,14 @@ class ThreeWindingsTransformerXml extends AbstractTransformerXml<ThreeWindingsTr
 
     @Override
     protected void writeRootElementAttributes(ThreeWindingsTransformer twt, Substation s, NetworkXmlWriterContext context) throws XMLStreamException {
-        if (twt.getLeg2().getG() != 0.0 || twt.getLeg2().getB() != 0.0 || twt.getLeg3().getG() != 0.0 || twt.getLeg3().getB() != 0.0) {
-            throw new PowsyblException("G and B in Leg 2 or 3 not supported by current version " + twt.getId());
-        }
         XmlUtil.writeDouble("r1", twt.getLeg1().getR(), context.getWriter());
         XmlUtil.writeDouble("x1", twt.getLeg1().getX(), context.getWriter());
         XmlUtil.writeDouble("g1", twt.getLeg1().getG(), context.getWriter());
         XmlUtil.writeDouble("b1", twt.getLeg1().getB(), context.getWriter());
+        XmlUtil.writeDouble("g2", twt.getLeg2().getG(), context.getWriter());
+        XmlUtil.writeDouble("b2", twt.getLeg2().getB(), context.getWriter());
+        XmlUtil.writeDouble("g3", twt.getLeg3().getG(), context.getWriter());
+        XmlUtil.writeDouble("b3", twt.getLeg3().getB(), context.getWriter());
         XmlUtil.writeDouble("ratedU1", twt.getLeg1().getRatedU(), context.getWriter());
         XmlUtil.writeDouble("r2", twt.getLeg2().getR(), context.getWriter());
         XmlUtil.writeDouble("x2", twt.getLeg2().getX(), context.getWriter());
@@ -60,6 +61,7 @@ class ThreeWindingsTransformerXml extends AbstractTransformerXml<ThreeWindingsTr
         XmlUtil.writeDouble("r3", twt.getLeg3().getR(), context.getWriter());
         XmlUtil.writeDouble("x3", twt.getLeg3().getX(), context.getWriter());
         XmlUtil.writeDouble("ratedU3", twt.getLeg3().getRatedU(), context.getWriter());
+        XmlUtil.writeDouble("ratedU0", twt.getRatedU0(), context.getWriter());
         writeNodeOrBus(1, twt.getLeg1().getTerminal(), context);
         writeNodeOrBus(2, twt.getLeg2().getTerminal(), context);
         writeNodeOrBus(3, twt.getLeg3().getTerminal(), context);
@@ -72,17 +74,29 @@ class ThreeWindingsTransformerXml extends AbstractTransformerXml<ThreeWindingsTr
 
     @Override
     protected void writeSubElements(ThreeWindingsTransformer twt, Substation s, NetworkXmlWriterContext context) throws XMLStreamException {
-        if (twt.getLeg1().getRatioTapChanger() != null || twt.getLeg1().getPhaseTapChanger() != null ||
-            twt.getLeg2().getPhaseTapChanger() != null || twt.getLeg3().getPhaseTapChanger() != null) {
-            throw new PowsyblException("Tap changer not supported by current version " + twt.getId());
+        RatioTapChanger rtc1 = twt.getLeg1().getRatioTapChanger();
+        if (rtc1 != null) {
+            writeRatioTapChanger("ratioTapChanger1", rtc1, context);
+        }
+        PhaseTapChanger ptc1 = twt.getLeg1().getPhaseTapChanger();
+        if (ptc1 != null) {
+            writePhaseTapChanger("phaseTapChanger1", ptc1, context);
         }
         RatioTapChanger rtc2 = twt.getLeg2().getRatioTapChanger();
         if (rtc2 != null) {
             writeRatioTapChanger("ratioTapChanger2", rtc2, context);
         }
+        PhaseTapChanger ptc2 = twt.getLeg2().getPhaseTapChanger();
+        if (ptc2 != null) {
+            writePhaseTapChanger("phaseTapChanger2", ptc2, context);
+        }
         RatioTapChanger rtc3 = twt.getLeg3().getRatioTapChanger();
         if (rtc3 != null) {
             writeRatioTapChanger("ratioTapChanger3", rtc3, context);
+        }
+        PhaseTapChanger ptc3 = twt.getLeg3().getPhaseTapChanger();
+        if (ptc3 != null) {
+            writePhaseTapChanger("phaseTapChanger3", ptc3, context);
         }
         if (twt.getLeg1().getCurrentLimits() != null) {
             writeCurrentLimits(1, twt.getLeg1().getCurrentLimits(), context.getWriter());
