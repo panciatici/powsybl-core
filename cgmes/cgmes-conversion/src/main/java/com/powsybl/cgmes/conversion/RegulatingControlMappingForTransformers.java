@@ -8,9 +8,11 @@ package com.powsybl.cgmes.conversion;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import com.powsybl.cgmes.conversion.RegulatingControlMapping.RegulatingControl;
 import com.powsybl.cgmes.model.CgmesModelException;
+import com.powsybl.cgmes.model.CgmesTerminal;
 import com.powsybl.iidm.network.Network;
 import com.powsybl.iidm.network.PhaseTapChanger;
 import com.powsybl.iidm.network.RatioTapChanger;
@@ -184,9 +186,11 @@ public class RegulatingControlMappingForTransformers {
     }
 
     private boolean setRtcRegulatingControlVoltage(String rtcId, boolean regulating, RegulatingControl control, RatioTapChanger rtc, Context context) {
-        Terminal terminal = parent.findRegulatingTerminal(control.cgmesTerminal, control.topologicalNode);
+        Terminal terminal = parent.findRegulatingTerminal(control.cgmesTerminal);
         if (terminal == null) {
-            context.missing(String.format(RegulatingControlMapping.MISSING_IIDM_TERMINAL, control.topologicalNode));
+            CgmesTerminal cgmesTerminal = context.cgmes().terminal(control.cgmesTerminal);
+            Objects.requireNonNull(cgmesTerminal);
+            context.missing(String.format(RegulatingControlMapping.MISSING_IIDM_TERMINAL_TOPOLOGICAL_NODE, cgmesTerminal.id(), cgmesTerminal.topologicalNode()));
             return false;
         }
 
@@ -233,9 +237,11 @@ public class RegulatingControlMappingForTransformers {
     }
 
     private boolean setPtcRegulatingControl(boolean tapChangerControlEnabled, PhaseTapChanger.RegulationMode regulationMode, RegulatingControl control, PhaseTapChanger ptc, Context context) {
-        Terminal terminal = parent.findRegulatingTerminal(control.cgmesTerminal, control.topologicalNode);
+        Terminal terminal = parent.findRegulatingTerminal(control.cgmesTerminal);
         if (terminal == null) {
-            context.missing(String.format(RegulatingControlMapping.MISSING_IIDM_TERMINAL, control.topologicalNode));
+            CgmesTerminal cgmesTerminal = context.cgmes().terminal(control.cgmesTerminal);
+            Objects.requireNonNull(cgmesTerminal);
+            context.missing(String.format(RegulatingControlMapping.MISSING_IIDM_TERMINAL_TOPOLOGICAL_NODE, cgmesTerminal.id(), cgmesTerminal.topologicalNode()));
             return false;
         }
 

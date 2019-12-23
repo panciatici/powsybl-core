@@ -11,6 +11,7 @@ import java.util.Map;
 
 import com.powsybl.cgmes.conversion.RegulatingControlMapping.RegulatingControl;
 import com.powsybl.cgmes.model.CgmesModelException;
+import com.powsybl.cgmes.model.CgmesTerminal;
 import com.powsybl.iidm.network.Generator;
 import com.powsybl.iidm.network.GeneratorAdder;
 import com.powsybl.iidm.network.Network;
@@ -90,9 +91,10 @@ public class RegulatingControlMappingForGenerators {
         RegulatingControl control, double qPercent, Generator gen) {
 
         // Take default terminal if it has not been defined
-        Terminal terminal = getRegulatingTerminal(gen, control.cgmesTerminal, control.topologicalNode);
+        Terminal terminal = getRegulatingTerminal(gen, control.cgmesTerminal);
         if (terminal == null) {
-            context.missing(String.format(RegulatingControlMapping.MISSING_IIDM_TERMINAL, control.topologicalNode));
+            CgmesTerminal cgmesTerminal = context.cgmes().terminal(control.cgmesTerminal);
+            context.missing(String.format(RegulatingControlMapping.MISSING_IIDM_TERMINAL_TOPOLOGICAL_NODE, cgmesTerminal.id(), cgmesTerminal.topologicalNode()));
             return false;
         }
 
@@ -122,12 +124,12 @@ public class RegulatingControlMappingForGenerators {
         return true;
     }
 
-    private Terminal getRegulatingTerminal(Generator gen, String cgmesTerminal, String topologicalNode) {
-        // Will take default terminal ONLY if it has not been explicitly defined in
-        // CGMES
+    private Terminal getRegulatingTerminal(Generator gen, String cgmesTerminal) {
+        // Will take default terminal ONLY if a regulation terminal 
+        // has not been explicitly defined in CGMES
         Terminal terminal = getDefaultTerminal(gen);
-        if (cgmesTerminal != null || topologicalNode != null) {
-            terminal = parent.findRegulatingTerminal(cgmesTerminal, topologicalNode);
+        if (cgmesTerminal != null) {
+            terminal = parent.findRegulatingTerminal(cgmesTerminal);
             // If terminal is null here it means that no IIDM terminal has been found
             // from the initial CGMES terminal or topological node,
             // we will consider the regulating control invalid,

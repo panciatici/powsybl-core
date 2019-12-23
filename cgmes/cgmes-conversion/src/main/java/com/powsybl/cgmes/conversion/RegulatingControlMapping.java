@@ -7,6 +7,7 @@
 package com.powsybl.cgmes.conversion;
 
 import com.powsybl.cgmes.conversion.RegulatingControlMapping.RegulatingControl;
+import com.powsybl.cgmes.model.CgmesTerminal;
 import com.powsybl.iidm.network.*;
 import com.powsybl.triplestore.api.PropertyBag;
 
@@ -20,7 +21,7 @@ public class RegulatingControlMapping {
     static final String REGULATING_CONTROL = "RegulatingControl";
     static final String TAP_CHANGER_CONTROL = "TapChangerControl";
     private static final String TERMINAL = "Terminal";
-    static final String MISSING_IIDM_TERMINAL = "IIDM terminal for this CGMES topological node: %s";
+    static final String MISSING_IIDM_TERMINAL_TOPOLOGICAL_NODE = "IIDM terminal for CGMES terminal %s on Topological Node  %s";
     private static final String VOLTAGE = "voltage";
 
     private final Context context;
@@ -54,7 +55,6 @@ public class RegulatingControlMapping {
     static class RegulatingControl {
         final String mode;
         final String cgmesTerminal;
-        final String topologicalNode;
         final boolean enabled;
         final double targetValue;
         final double targetDeadband;
@@ -63,7 +63,6 @@ public class RegulatingControlMapping {
         RegulatingControl(PropertyBag p) {
             this.mode = p.get("mode").toLowerCase();
             this.cgmesTerminal = p.getId(TERMINAL);
-            this.topologicalNode = p.getId("topologicalNode");
             this.enabled = p.asBoolean("enabled", true);
             this.targetValue = p.asDouble("targetValue");
             this.targetDeadband = p.asDouble("targetDeadband", Double.NaN);
@@ -107,12 +106,15 @@ public class RegulatingControlMapping {
         cachedRegulatingControls.clear();
     }
 
-    Terminal findRegulatingTerminal(String cgmesTerminal, String topologicalNode) {
-        return Optional.ofNullable(context.terminalMapping().find(cgmesTerminal)).filter(Terminal::isConnected)
+    Terminal findRegulatingTerminal(String cgmesTerminalId) {
+        return Optional.ofNullable(context.terminalMapping().find(cgmesTerminalId)).filter(Terminal::isConnected)
                 .orElseGet(() -> {
+                    CgmesTerminal cgmesTerminal = context.cgmes().terminal(cgmesTerminalId);
+                    Objects.requireNonNull(cgmesTerminal);
+                    String topologicalNode = cgmesTerminal.topologicalNode();
                     context.invalid("Regulating terminal", String.format("No connected IIDM terminal has been found for CGMES terminal %s. " +
                                     "A connected terminal linked to the topological node %s is searched.",
-                            cgmesTerminal, topologicalNode));
+                            cgmesTerminalId, topologicalNode));
                     return context.terminalMapping().findFromTopologicalNode(topologicalNode);
                 });
     }

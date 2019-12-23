@@ -556,10 +556,6 @@ WHERE {
     ?RegulatingControl
         cim:RegulatingControl.mode ?mode ;
         cim:RegulatingControl.Terminal ?Terminal .
-        { GRAPH ?graphTP {
-            ?Terminal
-                cim:Terminal.TopologicalNode ?topologicalNode
-        }}
 }}
 { GRAPH ?graphSSH {
     ?RegulatingControl

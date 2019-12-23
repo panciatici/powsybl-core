@@ -90,7 +90,12 @@ public class RegulatingControlMappingForStaticVarCompensators {
         }
 
         boolean okSet = false;
-        if (context.terminalMapping().areAssociated(control.cgmesTerminal, control.topologicalNode)) {
+        // XXX LUMA this should check if the original CGMES Terminal topological node
+        // is compatible with considering local regulation
+        boolean isLocalRegulation = true;
+        //String topologicalNode = context.cgmesTerminalFromIidmTerminal(svc.getTerminal()).topologicalNode();
+        //isLocalRegulation = context.terminalMapping().areAssociated(control.cgmesTerminal, topologicalNode); 
+        if (isLocalRegulation) {
             okSet = setRegulatingControl(control, svc);
         } else {
             context.pending(
