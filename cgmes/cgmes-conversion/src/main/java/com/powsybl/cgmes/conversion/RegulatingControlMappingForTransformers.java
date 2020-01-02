@@ -189,8 +189,11 @@ public class RegulatingControlMappingForTransformers {
         Terminal terminal = parent.findRegulatingTerminal(control.cgmesTerminal);
         if (terminal == null) {
             CgmesTerminal cgmesTerminal = context.cgmes().terminal(control.cgmesTerminal);
-            Objects.requireNonNull(cgmesTerminal);
-            context.missing(String.format(RegulatingControlMapping.MISSING_IIDM_TERMINAL_TOPOLOGICAL_NODE, cgmesTerminal.id(), cgmesTerminal.topologicalNode()));
+            if (cgmesTerminal != null) {
+                context.missing(String.format(RegulatingControlMapping.MISSING_IIDM_TERMINAL_TOPOLOGICAL_NODE, cgmesTerminal.id(), cgmesTerminal.topologicalNode()));
+            } else {
+                context.missing(String.format("CGMES Terminal %s", control.cgmesTerminal));
+            }
             return false;
         }
 

@@ -125,7 +125,7 @@ public class RegulatingControlMappingForGenerators {
     }
 
     private Terminal getRegulatingTerminal(Generator gen, String cgmesTerminal) {
-        // Will take default terminal ONLY if a regulation terminal 
+        // Will take default terminal ONLY if a regulation terminal
         // has not been explicitly defined in CGMES
         Terminal terminal = getDefaultTerminal(gen);
         if (cgmesTerminal != null) {

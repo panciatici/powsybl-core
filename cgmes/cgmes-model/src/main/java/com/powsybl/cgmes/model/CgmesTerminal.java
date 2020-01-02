@@ -25,7 +25,12 @@ public class CgmesTerminal {
         this.conductingEquipmentType = t.getLocal("conductingEquipmentType");
 
         this.connectivityNode = t.getId("ConnectivityNode");
-        this.topologicalNode = t.getId("TopologicalNode");
+
+        String tp = t.getId("TopologicalNodeTerminal");
+        if (tp == null) {
+            tp = t.getId("TopologicalNodeConnectivityNode");
+        }
+        this.topologicalNode = tp;
 
         // A TopologicalNode can be obtained from a Terminal using
         // relationship Terminal.TopologicalNode or

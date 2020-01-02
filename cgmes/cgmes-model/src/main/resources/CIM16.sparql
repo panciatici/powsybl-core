@@ -147,9 +147,12 @@ OPTIONAL { GRAPH ?graphSV {
 }}
 OPTIONAL { GRAPH ?graphCN {
 		?Terminal cim:Terminal.ConnectivityNode ?ConnectivityNode .
+		OPTIONAL { GRAPH ?graphTPCN {
+			?ConnectivityNode cim:ConnectivityNode.TopologicalNode ?TopologicalNodeConnectivityNode .
+		}}
 }}
 OPTIONAL { GRAPH ?graphTPT {
-		?Terminal cim:Terminal.TopologicalNode ?TopologicalNode .
+		?Terminal cim:Terminal.TopologicalNode ?TopologicalNodeTerminal .
 }}
 }
 

@@ -94,7 +94,7 @@ public class RegulatingControlMappingForStaticVarCompensators {
         // is compatible with considering local regulation
         boolean isLocalRegulation = true;
         //String topologicalNode = context.cgmesTerminalFromIidmTerminal(svc.getTerminal()).topologicalNode();
-        //isLocalRegulation = context.terminalMapping().areAssociated(control.cgmesTerminal, topologicalNode); 
+        //isLocalRegulation = context.terminalMapping().areAssociated(control.cgmesTerminal, topologicalNode);
         if (isLocalRegulation) {
             okSet = setRegulatingControl(control, svc);
         } else {
