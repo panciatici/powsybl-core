@@ -110,11 +110,8 @@ public class RegulatingControlMapping {
         return Optional.ofNullable(context.terminalMapping().find(cgmesTerminalId)).filter(Terminal::isConnected)
                 .orElseGet(() -> {
                     CgmesTerminal cgmesTerminal = context.cgmes().terminal(cgmesTerminalId);
-                    if (cgmesTerminalId.startsWith("_a62cb70a")) {
-                        System.err.println("vaya");
-                    }
                     if (cgmesTerminal != null) {
-                        // Try to obtain Terminal from TopologicalNode 
+                        // Try to obtain Terminal from TopologicalNode
                         String topologicalNode = cgmesTerminal.topologicalNode();
                         context.invalid("Regulating terminal", String.format("No connected IIDM terminal has been found for CGMES terminal %s. " +
                             "A connected terminal linked to the topological node %s is searched.",
