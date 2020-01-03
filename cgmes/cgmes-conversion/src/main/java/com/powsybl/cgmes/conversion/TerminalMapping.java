@@ -44,8 +44,12 @@ public class TerminalMapping {
     }
 
     public void buildTopologicalNodesMapping(PropertyBag p) {
-        if (p.containsKey("TopologicalNode")) {
-            topologicalNodesMapping.computeIfAbsent(p.getId("TopologicalNode"), t -> new ArrayList<>()).add(p.getId("Terminal"));
+        String tp = p.getId("TopologicalNodeTerminal");
+        if (tp == null) {
+            tp = p.getId("TopologicalNodeConnectivityNode");
+        }
+        if (tp != null) {
+            topologicalNodesMapping.computeIfAbsent(tp, t -> new ArrayList<>()).add(p.getId("Terminal"));
         }
     }
 
