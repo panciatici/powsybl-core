@@ -10,10 +10,16 @@ import com.powsybl.commons.xml.XmlUtil;
 import com.powsybl.iidm.xml.IidmXmlVersion;
 import com.powsybl.iidm.xml.NetworkXmlReaderContext;
 
+import javax.xml.stream.XMLStreamException;
+
 /**
  * @author Miora Ralambotiana <miora.ralambotiana at rte-france.com>
  */
 public final class IidmXmlUtil {
+
+    public interface IidmXmlRunnable {
+        void run() throws XMLStreamException;
+    }
 
     public static double readDoubleAttributeFromVersionToLatest(IidmXmlVersion version, String attributeName, NetworkXmlReaderContext context) {
         return readDoubleAttributeFromVersionToLatest(version, attributeName, Double.NaN, context);
@@ -43,6 +49,15 @@ public final class IidmXmlUtil {
             return XmlUtil.readDoubleAttribute(context.getReader(), attributeName);
         }
         return defaultValue;
+    }
+
+    public static void readNewVersionedSubElement(IidmXmlVersion version, NetworkXmlReaderContext context,
+                                                  IidmXmlRunnable runnable, IidmXmlRunnable defaultRunnable) throws XMLStreamException {
+        if (IidmXmlVersion.compare(context.getVersion(), version) >= 0) {
+            runnable.run();
+        } else {
+            defaultRunnable.run();
+        }
     }
 
     private IidmXmlUtil() {
