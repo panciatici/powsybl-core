@@ -35,7 +35,7 @@ public final class IidmXmlUtil {
     }
 
     /**
-     * If the file's version equals or is older than a given version, a double attribute is read at the given attribute name and returned.
+     * If the file's version is strictly older than a given version, a double attribute is read at the given attribute name and returned.
      * Else, the default value for the attribute is returned.
      */
     public static double readDoubleAttributeFromOldestToVersion(IidmXmlVersion version, String attributeName, double defaultValue, NetworkXmlReaderContext context) {
