@@ -15,30 +15,30 @@ import com.powsybl.iidm.xml.NetworkXmlReaderContext;
  */
 public final class IidmXmlUtil {
 
-    public static double readDoubleAttributeFromVersion(IidmXmlVersion version, String attributeName, NetworkXmlReaderContext context) {
-        return readDoubleAttributeFromVersion(version, attributeName, Double.NaN, context);
+    public static double readDoubleAttributeFromVersionToLatest(IidmXmlVersion version, String attributeName, NetworkXmlReaderContext context) {
+        return readDoubleAttributeFromVersionToLatest(version, attributeName, Double.NaN, context);
     }
 
     /**
      * If the file's version equals or is more recent than a given version, a double attribute is read at the given attribute name and returned.
      * Else, the default value for the attribute is returned.
      */
-    public static double readDoubleAttributeFromVersion(IidmXmlVersion version, String attributeName, double defaultValue, NetworkXmlReaderContext context) {
+    public static double readDoubleAttributeFromVersionToLatest(IidmXmlVersion version, String attributeName, double defaultValue, NetworkXmlReaderContext context) {
         if (IidmXmlVersion.compare(context.getVersion(), version) >= 0) {
             return XmlUtil.readDoubleAttribute(context.getReader(), attributeName);
         }
         return defaultValue;
     }
 
-    public static double readDoubleAttributeUntilVersion(IidmXmlVersion version, String attributeName, NetworkXmlReaderContext context) {
-        return readDoubleAttributeUntilVersion(version, attributeName, Double.NaN, context);
+    public static double readDoubleAttributeFromOldestToVersion(IidmXmlVersion version, String attributeName, NetworkXmlReaderContext context) {
+        return readDoubleAttributeFromOldestToVersion(version, attributeName, Double.NaN, context);
     }
 
     /**
      * If the file's version equals or is older than a given version, a double attribute is read at the given attribute name and returned.
      * Else, the default value for the attribute is returned.
      */
-    public static double readDoubleAttributeUntilVersion(IidmXmlVersion version, String attributeName, double defaultValue, NetworkXmlReaderContext context) {
+    public static double readDoubleAttributeFromOldestToVersion(IidmXmlVersion version, String attributeName, double defaultValue, NetworkXmlReaderContext context) {
         if (IidmXmlVersion.compare(context.getVersion(), version) < 0) {
             return XmlUtil.readDoubleAttribute(context.getReader(), attributeName);
         }
